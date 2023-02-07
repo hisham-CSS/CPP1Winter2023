@@ -20,6 +20,32 @@ public class PlayerController : MonoBehaviour
     public LayerMask isGroundLayer;
     public float groundCheckRadius;
 
+
+    Coroutine jumpForceChange = null;
+
+    public int maxLives = 5;
+    private int _lives = 3;
+
+    public int lives
+    {
+        get { return _lives; }
+        set
+        {
+            //if (_lives > value)
+            //we lost a life - we need to respawn
+
+            _lives = value;
+
+            if (_lives > maxLives)
+                _lives = maxLives;
+
+            //if (_lives < 0)
+            //gameover
+
+            Debug.Log("Lives have been set to: " + _lives.ToString());
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -105,45 +131,30 @@ public class PlayerController : MonoBehaviour
         rb.gravityScale = 5;
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+
+    public void StartJumpForceChange()
     {
-        if (other.gameObject.CompareTag("Powerup"))
+        if (jumpForceChange == null)
         {
-            //do something
+            jumpForceChange = StartCoroutine(JumpForceChange());
+        }
+        else
+        {
+            StopCoroutine(jumpForceChange);
+            jumpForceChange = null;
+            jumpForce /= 2;
+            jumpForceChange = StartCoroutine(JumpForceChange());
         }
     }
 
-    private void OnTriggerExit2D(Collider2D other)
+    IEnumerator JumpForceChange()
     {
-        if (other.gameObject.CompareTag("Powerup"))
-        {
-            //do something
-        }
-    }
+        jumpForce *= 2;
 
-    private void OnTriggerStay2D(Collider2D other)
-    {
-        if (other.gameObject.CompareTag("Powerup"))
-        {
-            //do something
-        }
+        yield return new WaitForSeconds(5.0f);
+
+        jumpForce /= 2;
+        jumpForceChange = null;
 
     }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        
-    }
-
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        
-    }
-
-    private void OnCollisionStay2D(Collision2D collision)
-    {
-        
-    }
-
 }
