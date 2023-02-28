@@ -18,15 +18,13 @@ public class Pickup : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            PlayerController temp = collision.gameObject.GetComponent<PlayerController>();
-
             switch (currentPickup)
             {
                 case PickupType.Powerup:
-                    temp.StartJumpForceChange();
+                    collision.gameObject.GetComponent<PlayerController>().StartJumpForceChange();
                     break;
                 case PickupType.Life:
-                    temp.lives++;
+                    GameManager.instance.lives++;
                     break;
                 case PickupType.Score:
 
